@@ -22,8 +22,26 @@
  *  SOFTWARE.
  */
 
-template <typename ... TComponents>
-DAEvoid ComponentSystemBase::SetupTargetFingerprint() noexcept
+#include "ECS/Archetype.hpp"
+
+USING_DAEMON_NAMESPACE
+
+ArchetypeFingerprint const& Archetype::GetFingerprint() const noexcept
 {
-    (m_target_fingerprint.AddTrait(TComponents::TypeId()), ...);
+    return m_fingerprint;
+}
+
+EntityID Archetype::CreateEntity() noexcept
+{
+    ComponentBase::ItemId id = 0;
+
+    for (auto&& component: m_components)
+        id = component.second->CreateItem();
+
+    return id;
+}
+
+DAEsize Archetype::EntitiesCount() const noexcept
+{
+    return m_components.cbegin()->second->GetItemCount();
 }

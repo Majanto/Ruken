@@ -35,7 +35,20 @@ EntityAdmin::~EntityAdmin()
         delete system;
 }
 
-DAEvoid EntityAdmin::UpdateSystems() noexcept
+DAEvoid EntityAdmin::StartSimulation() noexcept
 {
-    
+    for (auto && system: m_systems)
+        system->OnStart();
+}
+
+DAEvoid EntityAdmin::UpdateSimulation() noexcept
+{
+    for (auto && system: m_systems)
+        system->OnUpdate(0.0f);
+}
+
+DAEvoid EntityAdmin::EndSimulation() noexcept
+{
+    for (auto && system: m_systems)
+        system->OnEnd();
 }

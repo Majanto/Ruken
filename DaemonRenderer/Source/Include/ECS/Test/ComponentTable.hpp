@@ -1,7 +1,7 @@
 /*
  *  MIT License
  *
- *  Copyright (c) 2019 Basile Combet, Philippe Yi
+ *  Copyright (c) 2019-2020 Basile Combet, Philippe Yi
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,17 @@
  *  SOFTWARE.
  */
 
-#include "Kernel.hpp"
+#pragma once
 
-USING_DAEMON_NAMESPACE
+#include "ECS/Component.hpp"
 
-int main()
-{
-    Kernel kernel;
-
-    return kernel.Run();
-}
+/**
+ * \brief This table keeps track of every available component in the ECS
+ *        it is also used to create and maintain every component ID,
+ *        see the Component class for more info.
+ */
+DAEMON_DEFINE_COMPONENT_TABLE(
+    Position,
+    Counter,
+    Life
+);

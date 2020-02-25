@@ -25,15 +25,31 @@
 #pragma once
 
 #include "Config.hpp"
-#include "Types/FundamentalTypes.hpp"
+#include "Containers/Vector.hpp"
+
+#include "ECS/Group.hpp"
+#include "ECS/Archetype.hpp"
 #include "ECS/ComponentSystemBase.hpp"
 
 BEGIN_DAEMON_NAMESPACE
 
+/**
+ * \brief A system is in charge of only maintaining the data contained in components
+ * \tparam TComponents Required components for the system to operate
+ */
 template <typename... TComponents>
 class ComponentSystem : public ComponentSystemBase
 {
     public:
+
+        #pragma region Members
+
+        // This vector stores every group we wish to read/write
+        // You really should not try to edit the vector itself yourself.
+        // Instead, use it for iteration purposes only !
+        Vector<Group<TComponents...>> groups;
+
+        #pragma endregion
 
         #pragma region Constructors
 
@@ -46,10 +62,13 @@ class ComponentSystem : public ComponentSystemBase
 
         #pragma region Methods
 
-        /*
-        virtual DAEvoid OnUpdate() const noexcept = 0;
-        virtual DAEvoid OnQuery () const noexcept = 0;
-        */
+        /**
+         * \brief Adds a component reference group to the system.
+         *        This is called by the entity admin at the creation of a new archetype
+         *        if the component query of this archetype and the system matches
+         * \param in_archetype Referenced archetype of the group to create 
+         */
+        virtual DAEvoid AddReferenceGroup(Archetype& in_archetype) noexcept override final;
 
         #pragma endregion
 

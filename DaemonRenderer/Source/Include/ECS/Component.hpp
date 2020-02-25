@@ -27,7 +27,7 @@
 #include "Config.hpp"
 
 #include "Meta/Assert.hpp"
-#include "Containers/SOA/DataLayout.hpp"
+#include "ECS/ComponentBase.hpp"
 
 BEGIN_DAEMON_NAMESPACE
 
@@ -40,8 +40,8 @@ BEGIN_DAEMON_NAMESPACE
  *                   is using an enum enumerating every component of the game. This way if a component is deleted, the ids of every other
  *                   component will be maintained automatically. This enum must use the default values in order to work. See examples for more info.
  */
-template <typename TItem, DAEsize TUniqueId>
-class Component
+template <DAEsize TUniqueId, typename TItem>
+class Component final : public ComponentBase
 {
      DAEMON_STATIC_ASSERT(TUniqueId < DAEMON_MAX_ECS_COMPONENTS, "Please increate the maximum amount of ECS components to run this program.");
 
@@ -58,7 +58,6 @@ class Component
 
         using Layout = typename TItem::Layout;
         using Item   = TItem;
-        using ItemId = DAEsize;
 
         static constexpr DAEsize id = TUniqueId;
 
@@ -67,7 +66,7 @@ class Component
         Component()                         = default;
         Component(Component const& in_copy) = default;
         Component(Component&&      in_move) = default;
-        ~Component()                        = default;
+        virtual ~Component()                = default;
 
         #pragma endregion
 
@@ -78,14 +77,23 @@ class Component
          * \param in_item item to push back
          * \return Created item id
          */
-        ItemId CreateItem(TItem&& in_item);
-        ItemId CreateItem();
+        ItemId CreateItem(TItem&& in_item) noexcept;
+        ItemId CreateItem()                noexcept override;
 
         /**
          * \brief Returns the count of items in this component
          * \return Component item count
          */
-        DAEsize GetItemCount() const noexcept;
+        DAEsize GetItemCount() const noexcept override;
+
+        /**
+         * \brief Returns a view containing all the requested fields of a given entity
+         * \tparam TView View type
+         * \param in_entity Entity to fetch
+         * \return View containing all the requested fields of the given entity
+         */
+        template <typename TView>
+        auto GetItemView(EntityID in_entity) noexcept;
 
         #pragma endregion 
 
@@ -100,12 +108,19 @@ class Component
 /**
  * \brief Shorthand to declare a component alias named "<in_component_name>Component"
  * \note The component item must be named "<in_component_name>ComponentItem"
- * \note This macro also enables the usage of an enum class for the component table enum
- * \param in_component_table Component table enum
- * \param in_component_name Name of the component as described in the above component table enum
+ * \note This macro also automatically registers this component
+ * \param in_component_name Name of the component as defined in the component table 
  */
-#define DAEMON_DEFINE_COMPONENT(in_component_table, in_component_name)\
-    using in_component_name##Component = Component<in_component_name##ComponentItem, static_cast<DAEsize>(in_component_table::in_component_name)>
+#define DAEMON_DEFINE_COMPONENT(in_component_name)\
+    using in_component_name##Component = Component<static_cast<::DAEMON_NAMESPACE::DAEsize>(EComponentTable::in_component_name), in_component_name##ComponentItem>
+    
+/**
+ * \brief Creates an enum called EComponentTable used to keep track of every available
+ *        component in the ECS. It is also used to create and maintain every component ID.
+ *        See the Component class for more info.
+ */
+#define DAEMON_DEFINE_COMPONENT_TABLE(...)\
+    enum class EComponentTable { __VA_ARGS__ }
 
 #include "ECS/Component.inl"
 

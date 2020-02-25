@@ -1,7 +1,7 @@
 /*
  *  MIT License
  *
- *  Copyright (c) 2019-2020 Basile Combet, Philippe Yi
+ *  Copyright (c) 2019 Basile Combet, Philippe Yi
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,21 @@
  *  SOFTWARE.
  */
 
-#include "ECS/ArchetypeBase.hpp"
+template <typename ... TComponents>
+Group<TComponents...>::Group(Archetype& in_archetype, TComponents&... in_components) noexcept
+    : m_archetype  {in_archetype},
+      m_components {std::forward_as_tuple(in_components...)}
+{}
 
-USING_DAEMON_NAMESPACE
-
-ArchetypeFingerprint const& ArchetypeBase::GetFingerprint() const noexcept
+template <typename ... TComponents>
+template<typename TComponent>
+TComponent& Group<TComponents...>::GetComponent() noexcept
 {
-    return m_fingerprint;
+    return std::get<TComponent&>(m_components);
+}
+
+template <typename ... TComponents>
+Archetype& Group<TComponents...>::GetReferencedArchetype() const noexcept
+{
+    return m_archetype;
 }

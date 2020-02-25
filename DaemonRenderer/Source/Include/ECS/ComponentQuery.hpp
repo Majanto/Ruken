@@ -30,7 +30,7 @@
 
 BEGIN_DAEMON_NAMESPACE
 
-class ArchetypeBase;
+class Archetype;
 
 class ComponentQuery
 {
@@ -78,7 +78,7 @@ class ComponentQuery
          * \param in_archetype Archetype to match
          * \return True if the query matched, false otherwise
          */
-        DAEbool Match(ArchetypeBase const& in_archetype) const noexcept;
+        DAEbool Match(Archetype const& in_archetype) const noexcept;
 
         #pragma endregion
 

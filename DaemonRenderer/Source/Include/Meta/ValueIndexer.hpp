@@ -26,6 +26,8 @@
 
 #include <type_traits>
 
+#include "Config.hpp"
+
 BEGIN_DAEMON_NAMESPACE
 
 template <std::size_t TIndex, typename TType>

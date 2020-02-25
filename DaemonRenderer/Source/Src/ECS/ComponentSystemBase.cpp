@@ -27,10 +27,19 @@
 USING_DAEMON_NAMESPACE
 
 ComponentSystemBase::ComponentSystemBase() noexcept:
-    m_enabled {true}
+    enabled {true}
 {}
 
-DAEbool ComponentSystemBase::Enabled() const
+ComponentQuery const& ComponentSystemBase::GetQuery() const noexcept
 {
-    return m_enabled;
+    return m_query;
 }
+
+DAEvoid ComponentSystemBase::OnStart() noexcept
+{}
+
+DAEvoid ComponentSystemBase::OnUpdate(DAEfloat) noexcept
+{}
+
+DAEvoid ComponentSystemBase::OnEnd() noexcept
+{}

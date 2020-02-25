@@ -24,38 +24,33 @@
 
 #pragma once
 
-#include <typeindex>
+#include <Vector/Vector.hpp>
 
-#include "Config.hpp"
+#include "ECS/Component.hpp"
+#include "ECS/ComponentItem.hpp"
 
-BEGIN_DAEMON_NAMESPACE
+#include "ECS/Test/ComponentTable.hpp"
 
-/**
- * \brief Concatenates multiple std::index_sequence together
- * \tparam TSequences Sequences to concatenate
- */
-template <typename... TSequences>
-struct ConcatenateIndexSequence;
+USING_DAEMON_NAMESPACE
 
-/**
- * \brief Concatenates multiple std::index_sequence together (type shorthand)
- * \tparam TSequences Sequences to concatenate
- */
-template <typename... TSequences>
-using ConcatenateIndexSequenceT = typename ConcatenateIndexSequence<TSequences...>::Type;
-
-template <std::size_t... TIds>
-struct ConcatenateIndexSequence<std::index_sequence<TIds...>>
+struct PositionComponentItem : public ComponentItem<Vector3f>
 {
-    using Type = std::index_sequence<TIds...>;
+    enum EMembers
+    { Position };
 };
 
-template <std::size_t... TIds1, std::size_t... TIds2, typename... TTailSequences>
-struct ConcatenateIndexSequence<std::index_sequence<TIds1...>,
-              std::index_sequence<TIds2...>,
-              TTailSequences...>
+struct LifeComponentItem : public ComponentItem<DAEfloat, DAEfloat>
 {
-    using Type = ConcatenateIndexSequenceT<std::index_sequence<TIds1..., TIds2...>, TTailSequences...>;
+    enum EMembers
+    { Life, MaxLife };
 };
 
-END_DAEMON_NAMESPACE
+struct CounterComponentItem : public ComponentItem<DAEsize> 
+{
+    enum EMembers
+    { Counter };
+};
+
+DAEMON_DEFINE_COMPONENT(Position);
+DAEMON_DEFINE_COMPONENT(Counter);
+DAEMON_DEFINE_COMPONENT(Life);
