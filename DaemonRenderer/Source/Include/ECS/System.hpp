@@ -25,38 +25,52 @@
 #pragma once
 
 #include "Config.hpp"
-#include "Containers/Vector.hpp"
 
 #include "ECS/Group.hpp"
 #include "ECS/Archetype.hpp"
-#include "ECS/ComponentSystemBase.hpp"
+#include "ECS/SystemBase.hpp"
+
+#include "Containers/Vector.hpp"
 
 BEGIN_DAEMON_NAMESPACE
 
+class EntityAdmin;
+
 /**
- * \brief A system is in charge of only maintaining the data contained in components
+ * \brief Systems transform data. They implement the logic that modifies the components.
+ *
+ * It is important to notice that for lots of actions, you don’t care about the specific type of an entity;
+ * what you care about is specific properties of these entities.
+ * E.g. for rendering all you need is a mesh and a transform matrix; you don’t care if the entity is a player or a tree.
+ *
  * \tparam TComponents Required components for the system to operate
  */
 template <typename... TComponents>
-class ComponentSystem : public ComponentSystemBase
+class System : public SystemBase
 {
-    public:
+    // Allows to set m_admin
+    friend EntityAdmin;
+
+    protected:
 
         #pragma region Members
 
         // This vector stores every group we wish to read/write
         // You really should not try to edit the vector itself yourself.
         // Instead, use it for iteration purposes only !
-        Vector<Group<TComponents...>> groups;
+        Vector<Group<TComponents...>> m_groups;
+        EntityAdmin*                  m_admin;
 
         #pragma endregion
 
+    public:
+
         #pragma region Constructors
 
-        ComponentSystem() noexcept;
-        ComponentSystem(ComponentSystem const& in_copy) = default;
-        ComponentSystem(ComponentSystem&&      in_move) = default;
-        virtual ~ComponentSystem()                      = default;
+        System() noexcept;
+        System(System const& in_copy) = default;
+        System(System&&      in_move) = default;
+        virtual ~System()             = default;
 
         #pragma endregion
 
@@ -74,12 +88,12 @@ class ComponentSystem : public ComponentSystemBase
 
         #pragma region Operators
 
-        ComponentSystem& operator=(ComponentSystem const& in_copy) = default;
-        ComponentSystem& operator=(ComponentSystem&&      in_move) = default;
+        System& operator=(System const& in_copy) = default;
+        System& operator=(System&&      in_move) = default;
 
         #pragma endregion
 };
 
-#include "ECS/ComponentSystem.inl"
+#include "ECS/System.inl"
 
 END_DAEMON_NAMESPACE

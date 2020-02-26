@@ -27,6 +27,7 @@
 #include <type_traits>
 
 #include "Config.hpp"
+
 #include "Types/FundamentalTypes.hpp"
 
 BEGIN_DAEMON_NAMESPACE

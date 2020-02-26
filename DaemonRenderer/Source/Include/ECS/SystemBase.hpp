@@ -31,7 +31,7 @@
 
 BEGIN_DAEMON_NAMESPACE
 
-class ComponentSystemBase
+class SystemBase
 {
     protected:
 
@@ -51,10 +51,10 @@ class ComponentSystemBase
 
         #pragma region Constructors
 
-        ComponentSystemBase() noexcept;
-        ComponentSystemBase(ComponentSystemBase const& in_copy) = default;
-        ComponentSystemBase(ComponentSystemBase&&      in_move) = default;
-        virtual ~ComponentSystemBase()                          = default;
+        SystemBase() noexcept;
+        SystemBase(SystemBase const& in_copy) = default;
+        SystemBase(SystemBase&&      in_move) = default;
+        virtual ~SystemBase()                 = default;
 
         #pragma endregion
 
@@ -100,8 +100,8 @@ class ComponentSystemBase
 
         #pragma region Operators
 
-        ComponentSystemBase& operator=(ComponentSystemBase const& in_copy) = default;
-        ComponentSystemBase& operator=(ComponentSystemBase&&      in_move) = default;
+        SystemBase& operator=(SystemBase const& in_copy) = default;
+        SystemBase& operator=(SystemBase&&      in_move) = default;
 
         #pragma endregion
 };

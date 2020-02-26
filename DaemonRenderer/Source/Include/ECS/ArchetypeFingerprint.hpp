@@ -32,7 +32,11 @@
 
 BEGIN_DAEMON_NAMESPACE
 
-class ArchetypeFingerprint : public SizedBitmask<DAEMON_MAX_ECS_COMPONENTS / 64, MinimumTypeT<64, DAEsize>>
+/**
+ * \brief Stores a bitmask holding data about the component types stored inside an archetype
+ *        This allows for fast archetype comparisons and fast component queries. 
+ */
+class ArchetypeFingerprint : public SizedBitmask<DAEMON_MAX_ECS_COMPONENTS / 64, MinimumTypeT<DAEMON_MAX_ECS_COMPONENTS, DAEsize>>
 {
     public:
 
