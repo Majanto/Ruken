@@ -1,7 +1,7 @@
 /*
  *  MIT License
  *
- *  Copyright (c) 2019-2020 Basile Combet, Philippe Yi
+ *  Copyright (c) 2019 Basile Combet, Philippe Yi
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,31 +24,40 @@
 
 #pragma once
 
-#include <Types/NamedType.hpp>
-#include <Types/Operators/Comparison.hpp>
-#include <Types/Operators/Arithmetic/Decrement.hpp>
-#include <Types/Operators/Arithmetic/Increment.hpp>
-
 #include "Config.hpp"
-
+#include "Containers/Tuple.hpp"
 #include "Types/FundamentalTypes.hpp"
 
 BEGIN_DAEMON_NAMESPACE
 
 /**
- * \brief Entity ID class. This class is actually a strong typing of the DAEsize type
- *
- * And entity ID is constant and valid for the whole application lifetime
- * or until the attached entity is deleted or moved into another archetype
- * (which should almost only happen when a scene is deleted/reloaded/loaded or
- * in the context of a non runtime app like an editor)
+ * \brief Finds the index of the first occurence of TType in TTuple
+ * \note If the type isn't found, this will throw a hard compilation error
+ * \tparam TType Type occurence to look for
+ * \tparam TTuple Tuple to look into
  */
-struct EntityID : public NamedType <DAEsize, EntityID>,
-                  public Comparison<EntityID>,
-                  public Decrement <EntityID>,
-                  public Increment <EntityID>
+template <class TType, class TTuple>
+struct TupleIndex;
+
+template <class TType, class... TTypes>
+struct TupleIndex<TType, Tuple<TType, TTypes...>>
 {
-    using NamedType::NamedType;
+    static constexpr DAEsize value = 0;
 };
+
+template <class TType, class TFirst, class... TTypes>
+struct TupleIndex<TType, Tuple<TFirst, TTypes...>>
+{
+    static constexpr DAEsize value = 1 + TupleIndex<TType, Tuple<TTypes...>>::value;
+};
+
+/**
+ * \brief Finds the index of the first occurence of TType in TTuple
+ * \note If the type isn't found, this will throw a hard compilation error
+ * \tparam TType Type occurence to look for
+ * \tparam TTuple Tuple to look into
+ */
+template <class TType, class TTuple>
+inline constexpr DAEsize TupleIndexV = TupleIndex<TType, TTuple>::value;
 
 END_DAEMON_NAMESPACE

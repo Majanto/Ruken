@@ -46,11 +46,11 @@ struct DataLayoutItem : public std::tuple<TTypes...>
     using std::tuple<TTypes...>::tuple;
     using std::tuple<TTypes...>::operator=;
 
-    using Layout   = DataLayout<TContainer, TTypes...>;
-    using FullView = DataLayoutView<std::make_index_sequence<sizeof...(TTypes)>, TTypes...>;
-
     template <DAEsize... TItems>
     using MakeView = DataLayoutView<std::index_sequence<TItems...>, SelectType<TItems, TTypes...>...>;
+    using FullView = DataLayoutView<std::make_index_sequence<sizeof...(TTypes)>, TTypes...>;
+
+    using Layout   = DataLayout<TContainer, TTypes...>;
 };
 
 END_DAEMON_NAMESPACE

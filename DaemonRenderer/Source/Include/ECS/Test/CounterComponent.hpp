@@ -24,31 +24,17 @@
 
 #pragma once
 
-#include <Types/NamedType.hpp>
-#include <Types/Operators/Comparison.hpp>
-#include <Types/Operators/Arithmetic/Decrement.hpp>
-#include <Types/Operators/Arithmetic/Increment.hpp>
+#include "Containers/Array.hpp"
 
-#include "Config.hpp"
+#include "ECS/Component.hpp"
+#include "ECS/ComponentField.hpp"
+#include "ECS/Test/ComponentTable.hpp"
 
-#include "Types/FundamentalTypes.hpp"
+USING_DAEMON_NAMESPACE
 
-BEGIN_DAEMON_NAMESPACE
+struct Count       : ComponentField<DAEsize>            {};
+struct TestPadding : ComponentField<Array<DAEsize, 10>> {};
 
-/**
- * \brief Entity ID class. This class is actually a strong typing of the DAEsize type
- *
- * And entity ID is constant and valid for the whole application lifetime
- * or until the attached entity is deleted or moved into another archetype
- * (which should almost only happen when a scene is deleted/reloaded/loaded or
- * in the context of a non runtime app like an editor)
- */
-struct EntityID : public NamedType <DAEsize, EntityID>,
-                  public Comparison<EntityID>,
-                  public Decrement <EntityID>,
-                  public Increment <EntityID>
-{
-    using NamedType::NamedType;
-};
-
-END_DAEMON_NAMESPACE
+DAEMON_DEFINE_COMPONENT(Counter,
+    Count,        // Actual count variable
+    TestPadding); // Test padding to demonstrate views 
