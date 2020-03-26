@@ -24,10 +24,10 @@
 
 #pragma once
 
-#include "Config.hpp"
+#include <memory>
+#include <unordered_map>
 
-#include "Containers/SmartPtr.hpp"
-#include "Containers/UnorderedMap.hpp"
+#include "Config.hpp"
 
 #include "ECS/Group.hpp"
 #include "ECS/EntityID.hpp"
@@ -58,8 +58,8 @@ class Archetype
 
         #pragma region Members
         
-        UnorderedMap<DAEsize, UniquePtr<ComponentBase>> m_components;
-        ArchetypeFingerprint                            m_fingerprint;
+        std::unordered_map<DAEsize, std::unique_ptr<ComponentBase>> m_components;
+        ArchetypeFingerprint                                        m_fingerprint;
 
         #pragma endregion 
 
