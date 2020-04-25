@@ -152,4 +152,5 @@ namespace DAEMON_NAMESPACE {}
 
 // Sets the maximum number of components allowed by the ECS, keep this number
 // as low as possible. Must be a power of 2 with a minimum of 8.
+// This maximum does NOT take into account ExclusiveComponents, which does not have a maximum amount
 #define DAEMON_MAX_ECS_COMPONENTS 64
