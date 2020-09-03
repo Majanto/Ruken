@@ -29,28 +29,28 @@
 #include "Config.hpp"
 #include "Meta/ValueIndexer.hpp"
 
-#include "Containers/SOA/DataLayout.hpp"
-#include "Containers/SOA/DataLayoutView.hpp"
+#include "Containers/SOA/LinkedChunkLayout.hpp"
+#include "Containers/SOA/LinkedChunkLayoutView.hpp"
 
 BEGIN_DAEMON_NAMESPACE
 
-/** 
- * \brienf DataItem class
- * This class is meant to describe a full data layout as well as implementing setters/getters
- * This class also comes in handy for Item inheritance
+/**
+ * \brief Describes a full linked chunk list layout as well as implementing setters/getters
+ *        This class also comes in handy for Item inheritance
+ * \tparam TTypes Types of the layout (SOA)
  */
-template <template <typename> typename TContainer, typename... TTypes>
-struct DataLayoutItem : public std::tuple<TTypes...>
+template <typename... TTypes>
+struct LinkedChunkLayoutItem : public std::tuple<TTypes...>
 {
     // Making constructors available
     using std::tuple<TTypes...>::tuple;
     using std::tuple<TTypes...>::operator=;
 
     template <DAEsize... TItems>
-    using MakeView = DataLayoutView<std::index_sequence<TItems...>, SelectType<TItems, TTypes...>...>;
-    using FullView = DataLayoutView<std::make_index_sequence<sizeof...(TTypes)>, TTypes...>;
+    using MakeView = LinkedChunkLayoutView<std::index_sequence<TItems...>, SelectType<TItems, TTypes...>...>;
+    using FullView = LinkedChunkLayoutView<std::make_index_sequence<sizeof...(TTypes)>, TTypes...>;
 
-    using Layout   = DataLayout<TContainer, TTypes...>;
+    using Layout   = LinkedChunkLayout<TTypes...>;
 };
 
 END_DAEMON_NAMESPACE
